@@ -11,7 +11,7 @@ namespace hbridge {
 // Using PollingComponent as the updates are more consistent and reduces flickering
 class HBridgeLightOutput : public PollingComponent, public light::LightOutput {
  public:
-  HBridgeLightOutput() : PollingComponent(1) {}
+  HBridgeLightOutput() : PollingComponent(1000) {}
 
   void set_pina_pin(output::FloatOutput *pina_pin) { pina_pin_ = pina_pin; }
   void set_pinb_pin(output::FloatOutput *pinb_pin) { pinb_pin_ = pinb_pin; }
