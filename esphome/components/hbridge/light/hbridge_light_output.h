@@ -34,7 +34,8 @@ class HBridgeLightOutput : public PollingComponent, public light::LightOutput {
 
   }
 
-  static void updateTask(HBridgeLightOutput *hbridgeOutput) {
+  static void updateTask(void * taskParam) {
+    HBridgeLightOutput * hbridgeOutput = (HBridgeLightOutput *)taskParam;
     while (1)
     {
         hbridgeOutput->pinb_pin_->set_level(0);
