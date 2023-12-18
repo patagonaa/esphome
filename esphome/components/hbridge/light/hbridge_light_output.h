@@ -9,9 +9,9 @@ namespace esphome {
 namespace hbridge {
 
 // Using PollingComponent as the updates are more consistent and reduces flickering
-class HBridgeLightOutput : public PollingComponent, public light::LightOutput {
+class HBridgeLightOutput : public Component, public light::LightOutput {
  public:
-  HBridgeLightOutput() : PollingComponent(1) {}
+  HBridgeLightOutput() : Component() {}
 
   void set_pina_pin(output::FloatOutput *pina_pin) { pina_pin_ = pina_pin; }
   void set_pinb_pin(output::FloatOutput *pinb_pin) { pinb_pin_ = pinb_pin; }
@@ -25,30 +25,33 @@ class HBridgeLightOutput : public PollingComponent, public light::LightOutput {
   }
 
   void setup() override {
-    xTaskCreate(this->updateTask, "hbridge_update", 8*1024, this, 10, NULL);
-  }
-
-  void update() override {
-    // This method runs around 60 times per second
-    // We cannot do the PWM ourselves so we are reliant on the hardware PWM
-
+    xTaskCreate(this->updateTask, "hbridge_update", 8*1024, (void*)this, 1, NULL);
   }
 
   static void updateTask(void * taskParam) {
     HBridgeLightOutput * hbridgeOutput = (HBridgeLightOutput *)taskParam;
-    int i = 0;
+    bool lightA = false;
+    const TickType_t interval_on = pdMS_TO_TICKS(10);
+    const TickType_t interval_off = pdMS_TO_TICKS(100);
+    TickType_t interval;
     while (1)
     {
-        if (hbridgeOutput->pina_duty_ == 0 && hbridgeOutput->pinb_duty_ == 0){
-          delay(100);
+        if (hbridgeOutput->pina_duty_ == 0 && hbridgeOutput->pinb_duty_ == 0) {
+          interval = interval_off;
+        } else {
+          interval = interval_on;
         }
 
-        hbridgeOutput->pinb_pin_->set_level(0);
-        hbridgeOutput->pina_pin_->set_level(hbridgeOutput->pina_duty_);
-        delay(2);
-        hbridgeOutput->pina_pin_->set_level(0);
-        hbridgeOutput->pinb_pin_->set_level(hbridgeOutput->pinb_duty_);
-        delay(2);
+        if(lightA){
+          hbridgeOutput->pinb_pin_->set_level(0);
+          hbridgeOutput->pina_pin_->set_level(hbridgeOutput->pina_duty_);
+        } else {
+          hbridgeOutput->pina_pin_->set_level(0);
+          hbridgeOutput->pinb_pin_->set_level(hbridgeOutput->pinb_duty_);
+        }
+        lightA = !lightA;
+
+        vTaskDelay(interval);
     }
   }
 
