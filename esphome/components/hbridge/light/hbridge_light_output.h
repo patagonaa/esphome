@@ -34,6 +34,7 @@ class HBridgeLightOutput : public Component, public light::LightOutput {
     const TickType_t interval_on = pdMS_TO_TICKS(10);
     const TickType_t interval_off = pdMS_TO_TICKS(100);
     TickType_t interval;
+    TickType_t now = xTaskGetTickCount();
     while (1)
     {
         if (hbridgeOutput->pina_duty_ == 0 && hbridgeOutput->pinb_duty_ == 0) {
@@ -51,7 +52,7 @@ class HBridgeLightOutput : public Component, public light::LightOutput {
         }
         lightA = !lightA;
 
-        vTaskDelay(interval);
+        vTaskDelayUntil(&now, interval);
     }
   }
 
