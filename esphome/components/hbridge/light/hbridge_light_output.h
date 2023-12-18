@@ -11,7 +11,7 @@ namespace hbridge {
 // Using PollingComponent as the updates are more consistent and reduces flickering
 class HBridgeLightOutput : public PollingComponent, public light::LightOutput {
  public:
-  HBridgeLightOutput() : PollingComponent(10) {}
+  HBridgeLightOutput() : PollingComponent(1) {}
 
   void set_pina_pin(output::FloatOutput *pina_pin) { pina_pin_ = pina_pin; }
   void set_pinb_pin(output::FloatOutput *pinb_pin) { pinb_pin_ = pinb_pin; }
@@ -30,8 +30,8 @@ class HBridgeLightOutput : public PollingComponent, public light::LightOutput {
     // This method runs around 60 times per second
     // We cannot do the PWM ourselves so we are reliant on the hardware PWM
     if (!this->forward_direction_) {  // First LED Direction
-      this->pina_pin_->set_level(this->pina_duty_);
       this->pinb_pin_->set_level(0);
+      this->pina_pin_->set_level(this->pina_duty_);
       this->forward_direction_ = true;
     } else {  // Second LED Direction
       this->pina_pin_->set_level(0);
