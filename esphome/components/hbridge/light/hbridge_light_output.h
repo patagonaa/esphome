@@ -45,10 +45,10 @@ class HBridgeLightOutput : public PollingComponent, public light::LightOutput {
 
         hbridgeOutput->pinb_pin_->set_level(0);
         hbridgeOutput->pina_pin_->set_level(hbridgeOutput->pina_duty_);
-        delay(10);
+        delay(2);
         hbridgeOutput->pina_pin_->set_level(0);
         hbridgeOutput->pinb_pin_->set_level(hbridgeOutput->pinb_duty_);
-        delay(10);
+        delay(2);
     }
   }
 
