@@ -25,7 +25,7 @@ class HBridgeLightOutput : public PollingComponent, public light::LightOutput {
   }
 
   void setup() override {
-    xTaskCreate(this->updateTask, "hbridge_update", 8*1024, this, 2, NULL);
+    xTaskCreate(this->updateTask, "hbridge_update", 8*1024, this, 10, NULL);
   }
 
   void update() override {
