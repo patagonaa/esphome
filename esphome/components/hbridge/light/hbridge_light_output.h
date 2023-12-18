@@ -25,7 +25,7 @@ class HBridgeLightOutput : public PollingComponent, public light::LightOutput {
   }
 
   void setup() override {
-    xTaskCreate(this->updateTask, "hbridge_update", 8*1024, this, 10, NULL);
+    xTaskCreate(this->updateTask, "hbridge_update", 8*1024, this, 2, NULL);
   }
 
   void update() override {
@@ -41,15 +41,10 @@ class HBridgeLightOutput : public PollingComponent, public light::LightOutput {
     {
         hbridgeOutput->pinb_pin_->set_level(0);
         hbridgeOutput->pina_pin_->set_level(hbridgeOutput->pina_duty_);
-        delay(10);
+        delay(2);
         hbridgeOutput->pina_pin_->set_level(0);
         hbridgeOutput->pinb_pin_->set_level(hbridgeOutput->pinb_duty_);
-        delay(10);
-        if(i++ == 1000)
-        {
-          delay(1000);
-          i = 0;
-        }
+        delay(2);
     }
   }
 
