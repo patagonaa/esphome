@@ -24,19 +24,25 @@ class HBridgeLightOutput : public PollingComponent, public light::LightOutput {
     return traits;
   }
 
-  void setup() override { this->forward_direction_ = false; }
+  void setup() override {
+    xTaskCreate(this->updateTask, "hbridge_update", 8*1024, NULL, 1, NULL);
+  }
 
   void update() override {
     // This method runs around 60 times per second
     // We cannot do the PWM ourselves so we are reliant on the hardware PWM
-    if (!this->forward_direction_) {  // First LED Direction
-      this->pinb_pin_->set_level(0);
-      this->pina_pin_->set_level(this->pina_duty_);
-      this->forward_direction_ = true;
-    } else {  // Second LED Direction
-      this->pina_pin_->set_level(0);
-      this->pinb_pin_->set_level(this->pinb_duty_);
-      this->forward_direction_ = false;
+
+  }
+
+  void updateTask(void *pvParameters) {
+    while (1)
+    {
+        this->pinb_pin_->set_level(0);
+        this->pina_pin_->set_level(this->pina_duty_);
+        delay(10);
+        this->pina_pin_->set_level(0);
+        this->pinb_pin_->set_level(this->pinb_duty_);
+        delay(10);
     }
   }
 
@@ -51,7 +57,6 @@ class HBridgeLightOutput : public PollingComponent, public light::LightOutput {
   output::FloatOutput *pinb_pin_;
   float pina_duty_ = 0;
   float pinb_duty_ = 0;
-  bool forward_direction_ = false;
 };
 
 }  // namespace hbridge
