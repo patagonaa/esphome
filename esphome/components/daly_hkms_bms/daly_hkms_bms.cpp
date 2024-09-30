@@ -10,8 +10,8 @@ static const char *const TAG = "daly_hkms_bms";
 // the DALY BMS only _kinda_ does Modbus. The device address is offset by 0x80 (so BMS #1 has address 0x81)
 // which would be fine, however the Modbus address of the response has a different offset of 0x50,
 // which makes this very much non-standard-compliant...
-static const uint8_t DALY_MODBUS_REQUEST_ADDRESS_OFFSET = 0x80;
-static const uint8_t DALY_MODBUS_RESPONSE_ADDRESS_OFFSET = 0x50;
+static const uint8_t DALY_MODBUS_REQUEST_ADDRESS_OFFSET = 0;
+static const uint8_t DALY_MODBUS_RESPONSE_ADDRESS_OFFSET = 0;
 
 static const uint8_t DALY_MODBUS_READ_CELL_VOLTAGES_ADDR = DALY_MODBUS_ADDR_CELL_VOLT_1;
 
