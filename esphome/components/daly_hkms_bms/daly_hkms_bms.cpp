@@ -124,6 +124,7 @@ void DalyHkmsBmsComponent::on_modbus_data(const std::vector<uint8_t> &data) {
       return;
     uint16_t register_value = get_register(i);
     float value = register_value == unavailable_value ? NAN : (register_value + offset) * factor;
+    ESP_LOGD(TAG, "register_value: %f", value);
     sensor->publish_state(value);
   };
 
@@ -131,7 +132,7 @@ void DalyHkmsBmsComponent::on_modbus_data(const std::vector<uint8_t> &data) {
 #ifdef USE_SENSOR
     for (size_t i = 0; i < this->cell_voltage_sensors_max_; i++)
     {
-      publish_sensor_state(this->cell_voltage_sensors_[i], register_offset, DALY_MODBUS_ADDR_CELL_VOLT_1 + i, 0, 0.001);
+      publish_sensor_state(this->cell_voltage_sensors_[i], DALY_MODBUS_ADDR_CELL_VOLT_1 + i, 0, 0.001);
     }
 #endif
   } else if (this->read_state_ == ReadState::READ_DATA) {
