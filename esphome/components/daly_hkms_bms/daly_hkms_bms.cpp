@@ -128,7 +128,7 @@ void DalyHkmsBmsComponent::on_modbus_data(const std::vector<uint8_t> &data) {
   if (this->read_state_ == ReadState::READ_CELL_VOLTAGES) {
 #ifdef USE_SENSOR
     for (size_t i = 0; i < this->cell_voltage_sensors_max_; i++) {
-      publish_sensor_state(this->cell_voltage_sensors_[i], register_offset, DALY_MODBUS_ADDR_CELL_VOLT_1 + i, 0, 0.001);
+      publish_sensor_state(this->cell_voltage_sensors_[i], DALY_MODBUS_ADDR_CELL_VOLT_1 + i, 0, 0.001);
     }
 #endif
   } else if (this->read_state_ == ReadState::READ_DATA) {
