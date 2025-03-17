@@ -61,7 +61,7 @@ void DalyHkmsBmsComponent::loop() {
       return;
   }
 
-  ESP_LOGD(TAG, "Sending modbus read request to %d: start register %d, register count %d", this->daly_address_,
+  ESP_LOGI(TAG, "BMS %d: Sending modbus read request (start %d, register %d)", this->daly_address_,
            start_address, register_count);
 
   // send the request using Modbus directly instead of ModbusDevice so we can send the data with the request address
@@ -83,12 +83,12 @@ void DalyHkmsBmsComponent::on_modbus_data(const std::vector<uint8_t> &data) {
   // Other components might be sending commands to our device. But we don't get called with enough
   // context to know what is what. So if we didn't do a send, we ignore the data.
   if (!this->last_send_) {
-    ESP_LOGD(TAG, "Got data without requesting it first");
+    ESP_LOGD(TAG, "BMS %d: Got data without requesting it first", this->daly_address_);
     return;
   }
   this->last_send_ = 0;
 
-  ESP_LOGD(TAG, "Got modbus response: %d bytes", data.size());
+  ESP_LOGD(TAG, "BMS %d: Got modbus response: %d bytes", this->daly_address_, data.size());
 
   size_t register_count;
   size_t register_offset;
@@ -103,12 +103,12 @@ void DalyHkmsBmsComponent::on_modbus_data(const std::vector<uint8_t> &data) {
       register_count = DALY_MODBUS_READ_DATA_LENGTH;
       break;
     default:
-      ESP_LOGE(TAG, "Invalid read state");
+      ESP_LOGE(TAG, "BMS %d: Invalid read state");
       return;
   }
 
   if (data.size() < register_count * 2) {
-    ESP_LOGD(TAG, "Not enough data in modbus response");
+    ESP_LOGD(TAG, "BMS %d: Not enough data in modbus response");
     return;
   }
 
