@@ -41,7 +41,6 @@ void report_ota_error() {
 
 void OTARequestHandler::handleUpload(AsyncWebServerRequest *request, const String &filename, size_t index,
                                      uint8_t *data, size_t len, bool final) {
-#ifdef USE_ARDUINO
   bool success;
   if (index == 0) {
     ESP_LOGI(TAG, "OTA Update Start: %s", filename.c_str());
@@ -51,7 +50,7 @@ void OTARequestHandler::handleUpload(AsyncWebServerRequest *request, const Strin
     // NOLINTNEXTLINE(readability-static-accessed-through-instance)
     success = Update.begin((ESP.getFreeSketchSpace() - 0x1000) & 0xFFFFF000);
 #endif
-#if defined(USE_ESP32_FRAMEWORK_ARDUINO) || defined(USE_LIBRETINY)
+#if defined(USE_ESP32) || defined(USE_LIBRETINY)
     if (Update.isRunning()) {
       Update.abort();
     }
@@ -92,10 +91,8 @@ void OTARequestHandler::handleUpload(AsyncWebServerRequest *request, const Strin
       report_ota_error();
     }
   }
-#endif
 }
 void OTARequestHandler::handleRequest(AsyncWebServerRequest *request) {
-#ifdef USE_ARDUINO
   AsyncWebServerResponse *response;
   if (!Update.hasError()) {
     response = request->beginResponse(200, "text/plain", "Update Successful!");
@@ -107,13 +104,10 @@ void OTARequestHandler::handleRequest(AsyncWebServerRequest *request) {
   }
   response->addHeader("Connection", "close");
   request->send(response);
-#endif
 }
 
 void WebServerBase::add_ota_handler() {
-#ifdef USE_ARDUINO
   this->add_handler(new OTARequestHandler(this));  // NOLINT
-#endif
 }
 float WebServerBase::get_setup_priority() const {
   // Before WiFi (captive portal)
