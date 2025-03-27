@@ -37,7 +37,7 @@ void Modbus::loop() {
     }
 
     // stop blocking new send commands after sent_wait_time_ ms after response received
-    if (now - this->last_send_ > send_wait_time_) {
+    if (now - this->last_send_ > send_wait_time_ && now - this->last_modbus_byte_ > send_wait_time_) {
       if (waiting_for_response > 0) {
         ESP_LOGV(TAG, "Stop waiting for response from %d", waiting_for_response);
       }
@@ -149,7 +149,6 @@ bool Modbus::parse_modbus_byte_(uint8_t byte) {
       found = true;
     }
   }
-  waiting_for_response = 0;
 
   if (!found) {
     ESP_LOGW(TAG, "Got Modbus frame from unknown address 0x%02X! ", address);
