@@ -40,6 +40,8 @@ void Modbus::loop() {
     if (now - this->last_send_ > send_wait_time_ && now - this->last_modbus_byte_ > send_wait_time_) {
       if (waiting_for_response > 0) {
         ESP_LOGV(TAG, "Stop waiting for response from %d", waiting_for_response);
+        
+        ESP_LOGI(TAG, "Stop waiting for response from %d, %d ms after send, %d ms after byte", waiting_for_response, now - this->last_send_, now - this->last_modbus_byte_);
       }
       waiting_for_response = 0;
     }
