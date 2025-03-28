@@ -197,6 +197,34 @@ void MQTTBackendESP32::mqtt_event_handler(void *handler_args, esp_event_base_t b
 }
 
 #if defined(USE_MQTT_IDF_ENQUEUE)
+bool MQTTBackendESP32::enqueue_(esp_mqtt_event_id_t type, const char *topic, int qos, bool retain,
+                                const char *payload, size_t len) {
+  struct QueueElement elem;
+
+  elem.type = type;
+  elem.qos = qos;
+  elem.retain = retain;
+  elem.payload_len = len;
+  elem.topic = strdup(topic);
+  if (payload && len) {
+    elem.payload = (char *) malloc(len);  // NOLINT
+    elem.payload_len = len;
+    memcpy(elem.payload, payload, len);
+  } else {
+    elem.payload = NULL;
+    elem.payload_len = 0;
+  }
+
+  if (xQueueSend(this->mqtt_queue_, &elem, pdMS_TO_TICKS(MQTT_QUEUE_WAIT)) == pdPASS) {
+    return true;
+  } else {
+    ESP_LOGD("mqtt.idf", "dropping mqtt message to %s because queue is full", elem.topic);
+    free(elem.topic);    // NOLINT
+    free(elem.payload);  // NOLINT
+    return false;
+  }
+}
+
 void MQTTBackendESP32::esphome_mqtt_task(void *params) {
   MQTTBackendESP32 *this_mqtt = (MQTTBackendESP32 *) params;
 
