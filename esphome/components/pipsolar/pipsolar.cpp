@@ -665,7 +665,7 @@ std::string Pipsolar::read_field_(const char* message, size_t *pos) {
   size_t begin = *pos;
   // find delimiter or end of string
   while (message[*pos] != '\0' && message[*pos] != ' ') {
-    *pos++;
+    (*pos)++;
   }
   if (*pos == begin) {
     return "";
@@ -675,7 +675,7 @@ std::string Pipsolar::read_field_(const char* message, size_t *pos) {
 
   if (message[*pos] != '\0') {
     // skip delimiter after this field if there is one
-    *pos++;
+    (*pos)++;
   }
 
   return field;
@@ -683,11 +683,11 @@ std::string Pipsolar::read_field_(const char* message, size_t *pos) {
 void Pipsolar::skip_field_(const char* message, size_t *pos) {
   // find delimiter or end of string
   while (message[*pos] != '\0' && message[*pos] != ' ') {
-    *pos++;
+    (*pos)++;
   }
   if(message[*pos] != '\0') {
     // skip delimiter after this field if there is one
-    *pos++;
+    (*pos)++;
   }
 }
 
