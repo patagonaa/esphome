@@ -67,41 +67,41 @@ void Pipsolar::loop() {
 
   if (this->state_ == STATE_POLL_CHECKED) {
     switch (this->enabled_polling_commands_[this->last_polling_command_].identifier) {
-      // case POLLING_QPIRI:
-      //   ESP_LOGD(TAG, "Decode QPIRI");
-      //   handle_qpiri_((const char*)this->read_buffer_);
-      //   this->state_ = STATE_IDLE;
-      //   break;
-      // case POLLING_QPIGS:
-      //   ESP_LOGD(TAG, "Decode QPIGS");
-      //   handle_qpigs_((const char*)this->read_buffer_);
-      //   this->state_ = STATE_IDLE;
-      //   break;
-      // case POLLING_QMOD:
-      //   ESP_LOGD(TAG, "Decode QMOD");
-      //   handle_qmod_((const char*)this->read_buffer_);
-      //   this->state_ = STATE_IDLE;
-      //   break;
-      // case POLLING_QFLAG:
-      //   ESP_LOGD(TAG, "Decode QFLAG");
-      //   handle_qflag_((const char*)this->read_buffer_);
-      //   this->state_ = STATE_IDLE;
-      //   break;
-      // case POLLING_QPIWS:
-      //   ESP_LOGD(TAG, "Decode QPIWS");
-      //   handle_qpiws_((const char*)this->read_buffer_);
-      //   this->state_ = STATE_IDLE;
-      //   break;
-      // case POLLING_QT:
-      //   ESP_LOGD(TAG, "Decode QT");
-      //   handle_qt_((const char*)this->read_buffer_);
-      //   this->state_ = STATE_IDLE;
-      //   break;
-      // case POLLING_QMN:
-      //   ESP_LOGD(TAG, "Decode QMN");
-      //   handle_qmn_((const char*)this->read_buffer_);
-      //   this->state_ = STATE_IDLE;
-      //   break;
+      case POLLING_QPIRI:
+        ESP_LOGD(TAG, "Decode QPIRI");
+        handle_qpiri_((const char*)this->read_buffer_);
+        this->state_ = STATE_IDLE;
+        break;
+      case POLLING_QPIGS:
+        ESP_LOGD(TAG, "Decode QPIGS");
+        handle_qpigs_((const char*)this->read_buffer_);
+        this->state_ = STATE_IDLE;
+        break;
+      case POLLING_QMOD:
+        ESP_LOGD(TAG, "Decode QMOD");
+        handle_qmod_((const char*)this->read_buffer_);
+        this->state_ = STATE_IDLE;
+        break;
+      case POLLING_QFLAG:
+        ESP_LOGD(TAG, "Decode QFLAG");
+        handle_qflag_((const char*)this->read_buffer_);
+        this->state_ = STATE_IDLE;
+        break;
+      case POLLING_QPIWS:
+        ESP_LOGD(TAG, "Decode QPIWS");
+        handle_qpiws_((const char*)this->read_buffer_);
+        this->state_ = STATE_IDLE;
+        break;
+      case POLLING_QT:
+        ESP_LOGD(TAG, "Decode QT");
+        handle_qt_((const char*)this->read_buffer_);
+        this->state_ = STATE_IDLE;
+        break;
+      case POLLING_QMN:
+        ESP_LOGD(TAG, "Decode QMN");
+        handle_qmn_((const char*)this->read_buffer_);
+        this->state_ = STATE_IDLE;
+        break;
       default:
         this->state_ = STATE_IDLE;
         break;
@@ -363,49 +363,53 @@ void Pipsolar::handle_qpigs_(const char* message) {
   // skip start byte
   size_t pos = 1;
 
-  this->read_float_sensor_(message, &pos, this->grid_voltage_);
-  this->read_float_sensor_(message, &pos, this->grid_frequency_);
-  this->read_float_sensor_(message, &pos, this->ac_output_voltage_);
-  this->read_float_sensor_(message, &pos, this->ac_output_frequency_);
+  std::string field1 = this->read_field_(message, &pos);
+  std::string field2 = this->read_field_(message, &pos);
+  ESP_LOGD(TAG, "Fields: '%s', '%s'", field1.c_str(), field2.c_str());
 
-  this->read_int_sensor_(message, &pos, this->ac_output_apparent_power_);
-  this->read_int_sensor_(message, &pos, this->ac_output_active_power_);
-  this->read_int_sensor_(message, &pos, this->output_load_percent_);
-  this->read_int_sensor_(message, &pos, this->bus_voltage_);
+  // this->read_float_sensor_(message, &pos, this->grid_voltage_);
+  // this->read_float_sensor_(message, &pos, this->grid_frequency_);
+  // this->read_float_sensor_(message, &pos, this->ac_output_voltage_);
+  // this->read_float_sensor_(message, &pos, this->ac_output_frequency_);
 
-  this->read_float_sensor_(message, &pos, this->battery_voltage_);
+  // this->read_int_sensor_(message, &pos, this->ac_output_apparent_power_);
+  // this->read_int_sensor_(message, &pos, this->ac_output_active_power_);
+  // this->read_int_sensor_(message, &pos, this->output_load_percent_);
+  // this->read_int_sensor_(message, &pos, this->bus_voltage_);
 
-  this->read_int_sensor_(message, &pos, this->battery_charging_current_);
-  this->read_int_sensor_(message, &pos, this->battery_capacity_percent_);
-  this->read_int_sensor_(message, &pos, this->inverter_heat_sink_temperature_);
+  // this->read_float_sensor_(message, &pos, this->battery_voltage_);
 
-  this->read_float_sensor_(message, &pos, this->pv_input_current_for_battery_);
-  this->read_float_sensor_(message, &pos, this->pv_input_voltage_);
-  this->read_float_sensor_(message, &pos, this->battery_voltage_scc_);
+  // this->read_int_sensor_(message, &pos, this->battery_charging_current_);
+  // this->read_int_sensor_(message, &pos, this->battery_capacity_percent_);
+  // this->read_int_sensor_(message, &pos, this->inverter_heat_sink_temperature_);
 
-  this->read_int_sensor_(message, &pos, this->battery_discharge_current_);
+  // this->read_float_sensor_(message, &pos, this->pv_input_current_for_battery_);
+  // this->read_float_sensor_(message, &pos, this->pv_input_voltage_);
+  // this->read_float_sensor_(message, &pos, this->battery_voltage_scc_);
 
-  std::string device_status_1 = this->read_field_(message, &pos);
-  this->publish_binary_sensor_(this->get_bit_(device_status_1, 0), this->add_sbu_priority_version_);
-  this->publish_binary_sensor_(this->get_bit_(device_status_1, 1), this->configuration_status_);
-  this->publish_binary_sensor_(this->get_bit_(device_status_1, 2), this->scc_firmware_version_);
-  this->publish_binary_sensor_(this->get_bit_(device_status_1, 3), this->load_status_);
-  this->publish_binary_sensor_(this->get_bit_(device_status_1, 4), this->battery_voltage_to_steady_while_charging_);
-  this->publish_binary_sensor_(this->get_bit_(device_status_1, 5), this->charging_status_);
-  this->publish_binary_sensor_(this->get_bit_(device_status_1, 6), this->scc_charging_status_);
-  this->publish_binary_sensor_(this->get_bit_(device_status_1, 7), this->ac_charging_status_);
+  // this->read_int_sensor_(message, &pos, this->battery_discharge_current_);
 
-  esphome::optional<int> battery_voltage_offset_for_fans_on_ = parse_number<int32_t>(this->read_field_(message, &pos));
-  if (this->battery_voltage_offset_for_fans_on_) {
-    this->battery_voltage_offset_for_fans_on_->publish_state(battery_voltage_offset_for_fans_on_.value_or(NAN) / 10.0f);
-  }
-  this->read_int_sensor_(message, &pos, this->eeprom_version_);
-  this->read_int_sensor_(message, &pos, this->pv_charging_power_);
+  // std::string device_status_1 = this->read_field_(message, &pos);
+  // this->publish_binary_sensor_(this->get_bit_(device_status_1, 0), this->add_sbu_priority_version_);
+  // this->publish_binary_sensor_(this->get_bit_(device_status_1, 1), this->configuration_status_);
+  // this->publish_binary_sensor_(this->get_bit_(device_status_1, 2), this->scc_firmware_version_);
+  // this->publish_binary_sensor_(this->get_bit_(device_status_1, 3), this->load_status_);
+  // this->publish_binary_sensor_(this->get_bit_(device_status_1, 4), this->battery_voltage_to_steady_while_charging_);
+  // this->publish_binary_sensor_(this->get_bit_(device_status_1, 5), this->charging_status_);
+  // this->publish_binary_sensor_(this->get_bit_(device_status_1, 6), this->scc_charging_status_);
+  // this->publish_binary_sensor_(this->get_bit_(device_status_1, 7), this->ac_charging_status_);
+
+  // esphome::optional<int> battery_voltage_offset_for_fans_on_ = parse_number<int32_t>(this->read_field_(message, &pos));
+  // if (this->battery_voltage_offset_for_fans_on_) {
+  //   this->battery_voltage_offset_for_fans_on_->publish_state(battery_voltage_offset_for_fans_on_.value_or(NAN) / 10.0f);
+  // }
+  // this->read_int_sensor_(message, &pos, this->eeprom_version_);
+  // this->read_int_sensor_(message, &pos, this->pv_charging_power_);
   
-  std::string device_status_2 = this->read_field_(message, &pos);
-  this->publish_binary_sensor_(this->get_bit_(device_status_2, 0), this->charging_to_floating_mode_);
-  this->publish_binary_sensor_(this->get_bit_(device_status_2, 1), this->switch_on_);
-  this->publish_binary_sensor_(this->get_bit_(device_status_2, 2), this->dustproof_installed_);
+  // std::string device_status_2 = this->read_field_(message, &pos);
+  // this->publish_binary_sensor_(this->get_bit_(device_status_2, 0), this->charging_to_floating_mode_);
+  // this->publish_binary_sensor_(this->get_bit_(device_status_2, 1), this->switch_on_);
+  // this->publish_binary_sensor_(this->get_bit_(device_status_2, 2), this->dustproof_installed_);
 }
 
 void Pipsolar::handle_qmod_(const char* message) {
@@ -663,13 +667,13 @@ std::string Pipsolar::read_field_(const char* message, size_t *pos) {
   while (message[*pos] != '\0' && message[*pos] != ' ') {
     *pos++;
   }
-  if(*pos == begin) {
+  if (*pos == begin) {
     return "";
   }
   
   std::string field(message, begin, *pos - begin);
 
-  if(message[*pos] != '\0') {
+  if (message[*pos] != '\0') {
     // skip delimiter after this field if there is one
     *pos++;
   }
