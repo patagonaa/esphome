@@ -67,41 +67,41 @@ void Pipsolar::loop() {
 
   if (this->state_ == STATE_POLL_CHECKED) {
     switch (this->enabled_polling_commands_[this->last_polling_command_].identifier) {
-      case POLLING_QPIRI:
-        ESP_LOGD(TAG, "Decode QPIRI");
-        handle_qpiri_((const char*)this->read_buffer_);
-        this->state_ = STATE_IDLE;
-        break;
-      case POLLING_QPIGS:
-        ESP_LOGD(TAG, "Decode QPIGS");
-        handle_qpigs_((const char*)this->read_buffer_);
-        this->state_ = STATE_IDLE;
-        break;
-      case POLLING_QMOD:
-        ESP_LOGD(TAG, "Decode QMOD");
-        handle_qmod_((const char*)this->read_buffer_);
-        this->state_ = STATE_IDLE;
-        break;
-      case POLLING_QFLAG:
-        ESP_LOGD(TAG, "Decode QFLAG");
-        handle_qflag_((const char*)this->read_buffer_);
-        this->state_ = STATE_IDLE;
-        break;
-      case POLLING_QPIWS:
-        ESP_LOGD(TAG, "Decode QPIWS");
-        handle_qpiws_((const char*)this->read_buffer_);
-        this->state_ = STATE_IDLE;
-        break;
-      case POLLING_QT:
-        ESP_LOGD(TAG, "Decode QT");
-        handle_qt_((const char*)this->read_buffer_);
-        this->state_ = STATE_IDLE;
-        break;
-      case POLLING_QMN:
-        ESP_LOGD(TAG, "Decode QMN");
-        handle_qmn_((const char*)this->read_buffer_);
-        this->state_ = STATE_IDLE;
-        break;
+      // case POLLING_QPIRI:
+      //   ESP_LOGD(TAG, "Decode QPIRI");
+      //   handle_qpiri_((const char*)this->read_buffer_);
+      //   this->state_ = STATE_IDLE;
+      //   break;
+      // case POLLING_QPIGS:
+      //   ESP_LOGD(TAG, "Decode QPIGS");
+      //   handle_qpigs_((const char*)this->read_buffer_);
+      //   this->state_ = STATE_IDLE;
+      //   break;
+      // case POLLING_QMOD:
+      //   ESP_LOGD(TAG, "Decode QMOD");
+      //   handle_qmod_((const char*)this->read_buffer_);
+      //   this->state_ = STATE_IDLE;
+      //   break;
+      // case POLLING_QFLAG:
+      //   ESP_LOGD(TAG, "Decode QFLAG");
+      //   handle_qflag_((const char*)this->read_buffer_);
+      //   this->state_ = STATE_IDLE;
+      //   break;
+      // case POLLING_QPIWS:
+      //   ESP_LOGD(TAG, "Decode QPIWS");
+      //   handle_qpiws_((const char*)this->read_buffer_);
+      //   this->state_ = STATE_IDLE;
+      //   break;
+      // case POLLING_QT:
+      //   ESP_LOGD(TAG, "Decode QT");
+      //   handle_qt_((const char*)this->read_buffer_);
+      //   this->state_ = STATE_IDLE;
+      //   break;
+      // case POLLING_QMN:
+      //   ESP_LOGD(TAG, "Decode QMN");
+      //   handle_qmn_((const char*)this->read_buffer_);
+      //   this->state_ = STATE_IDLE;
+      //   break;
       default:
         this->state_ = STATE_IDLE;
         break;
