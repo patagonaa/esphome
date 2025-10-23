@@ -72,7 +72,7 @@ class I2CBus {
   /// @return an i2c::ErrorCode
   /// @details This is a pure virtual method that must be implemented in the subclass.
   virtual ErrorCode write_readv(uint8_t address, const uint8_t *write_buffer, size_t write_count, uint8_t *read_buffer,
-                                size_t read_count) = 0;
+                                size_t read_count, bool ack_check = true) = 0;
 
   // Legacy functions for compatibility
 

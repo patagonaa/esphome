@@ -112,7 +112,7 @@ void ArduinoI2CBus::dump_config() {
 }
 
 ErrorCode ArduinoI2CBus::write_readv(uint8_t address, const uint8_t *write_buffer, size_t write_count,
-                                     uint8_t *read_buffer, size_t read_count) {
+                                     uint8_t *read_buffer, size_t read_count, bool ack_check) {
 #if defined(USE_ESP8266)
   this->set_pins_and_clock_();  // reconfigure Wire global state in case there are multiple instances
 #endif

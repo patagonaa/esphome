@@ -115,7 +115,7 @@ void IDFI2CBus::dump_config() {
 }
 
 ErrorCode IDFI2CBus::write_readv(uint8_t address, const uint8_t *write_buffer, size_t write_count, uint8_t *read_buffer,
-                                 size_t read_count) {
+                                 size_t read_count, bool ack_check) {
   // logging is only enabled with v level, if warnings are shown the caller
   // should log them
   if (!initialized_) {
@@ -133,7 +133,7 @@ ErrorCode IDFI2CBus::write_readv(uint8_t address, const uint8_t *write_buffer, s
     ESP_LOGV(TAG, "0x%02X BUS PROBE", address);
     jobs[num_jobs++].command = I2C_MASTER_CMD_START;
     jobs[num_jobs].command = I2C_MASTER_CMD_WRITE;
-    jobs[num_jobs].write.ack_check = true;
+    jobs[num_jobs].write.ack_check = ack_check;
     jobs[num_jobs].write.data = &write_addr;
     jobs[num_jobs++].write.total_bytes = 1;
   } else {
@@ -141,11 +141,11 @@ ErrorCode IDFI2CBus::write_readv(uint8_t address, const uint8_t *write_buffer, s
       ESP_LOGV(TAG, "0x%02X TX %s", address, format_hex_pretty(write_buffer, write_count).c_str());
       jobs[num_jobs++].command = I2C_MASTER_CMD_START;
       jobs[num_jobs].command = I2C_MASTER_CMD_WRITE;
-      jobs[num_jobs].write.ack_check = true;
+      jobs[num_jobs].write.ack_check = ack_check;
       jobs[num_jobs].write.data = &write_addr;
       jobs[num_jobs++].write.total_bytes = 1;
       jobs[num_jobs].command = I2C_MASTER_CMD_WRITE;
-      jobs[num_jobs].write.ack_check = true;
+      jobs[num_jobs].write.ack_check = ack_check;
       jobs[num_jobs].write.data = (uint8_t *) write_buffer;
       jobs[num_jobs++].write.total_bytes = write_count;
     }
@@ -153,7 +153,7 @@ ErrorCode IDFI2CBus::write_readv(uint8_t address, const uint8_t *write_buffer, s
       ESP_LOGV(TAG, "0x%02X RX bytes %zu", address, read_count);
       jobs[num_jobs++].command = I2C_MASTER_CMD_START;
       jobs[num_jobs].command = I2C_MASTER_CMD_WRITE;
-      jobs[num_jobs].write.ack_check = true;
+      jobs[num_jobs].write.ack_check = ack_check;
       jobs[num_jobs].write.data = &read_addr;
       jobs[num_jobs++].write.total_bytes = 1;
       if (read_count > 1) {
