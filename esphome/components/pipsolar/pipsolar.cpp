@@ -667,6 +667,7 @@ void Pipsolar::handle_qpiws_(const char *message) {
   this->publish_binary_sensor_(value_faults_present, this->faults_present_);
 
   if (this->fault_code_) {
+    ESP_LOGW(TAG, "Flags Length: %" PRIu32, flags.length());
     if (flags.length() < 33) {
       this->fault_code_->publish_state(NAN);
     } else {
