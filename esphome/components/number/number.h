@@ -28,6 +28,8 @@ class Number;
  */
 class Number : public EntityBase {
  public:
+  explicit Number();
+
   float state;
 
   void publish_state(float state);
